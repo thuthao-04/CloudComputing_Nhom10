@@ -35,7 +35,7 @@ export default function ProductsPage() {
     fetchProducts()
   }
 
-  const columns = [
+  const columns: { key: keyof Product; label: string; isDate?: boolean; isImage?: boolean }[] = [
     { key: "id", label: "ID" },
     { key: "name", label: "Tên sản phẩm" },
     { key: "category", label: "Danh mục" },
@@ -43,15 +43,15 @@ export default function ProductsPage() {
     { key: "created_at", label: "Ngày tạo", isDate: true },
     { key: "image_url", label: "Ảnh", isImage: true },
     { key: "description", label: "Mô tả" },
-  ] as const
+  ]
 
-  const fields = [
+  const fields: { key: keyof Product; label: string }[] = [
     { key: "name", label: "Tên sản phẩm" },
     { key: "category", label: "Danh mục" },
     { key: "description", label: "Mô tả" },
     { key: "price", label: "Giá" },
     { key: "image_url", label: "Ảnh (URL)" },
-  ] as const
+  ]
 
   return (
     <>

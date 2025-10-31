@@ -28,21 +28,23 @@ export default function UsersPage() {
     fetchUsers()
   }
 
-  const columns = [
+  // Sửa columns: bỏ 'as const' và ép kiểu mutable
+  const columns: { key: keyof User; label: string; isDate?: boolean }[] = [
     { key: "id", label: "ID" },
     { key: "name", label: "Tên" },
     { key: "email", label: "Email" },
     { key: "phone", label: "SĐT" },
     { key: "address", label: "Địa chỉ" },
-    { key: "created_at", label: "Ngày tạo" , isDate: true},
-  ] as const
+    { key: "created_at", label: "Ngày tạo", isDate: true },
+  ]
 
-  const fields = [
+  // Sửa fields: bỏ 'as const' và ép kiểu mutable
+  const fields: { key: keyof User; label: string }[] = [
     { key: "name", label: "Tên người dùng" },
     { key: "email", label: "Email" },
     { key: "phone", label: "SĐT" },
     { key: "address", label: "Địa chỉ" },
-  ] as const
+  ]
 
   return (
     <>
