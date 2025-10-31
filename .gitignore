@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.env
+
+# Một số file build/node khác nên bỏ qua luôn
+node_modules/
+dist/
+.next/
+.DS_Store
