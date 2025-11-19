@@ -31,12 +31,25 @@ export default function FormTable<T extends { id: number }>({
   }
 
   return (
-    <div className="card shadow-sm border-0">
-      <div className="card-header bg-warning bg-opacity-10 border-0 d-flex justify-content-between align-items-center">
-        <h5 className="mb-0 fw-semibold text-dark">
-          {title} <span className="badge bg-warning text-dark">({data.length})</span>
+    <div className="card shadow-sm border-0" style={{ backgroundColor: "#E0F7FA" }}>
+      <div
+        className="card-header d-flex justify-content-between align-items-center"
+        style={{ backgroundColor: "#0288D1", color: "#fff" , height: '60px'}}
+      >
+        <h5 className="mb-0 fw-semibold">
+          {title}{" "}
+          <span
+            className="badge"
+            style={{ backgroundColor: "#E0F7FA", color: "#0288D1" }}
+          >
+            ({data.length})
+          </span>
         </h5>
-        <button onClick={onAdd} className="btn btn-success btn-sm px-3">
+        <button
+          onClick={onAdd}
+          className="btn btn-light btn-sm px-3 fw-semibold"
+          style={{ color: "#0288D1", border: "1px solid #0288D1" }}
+        >
           Thêm mới
         </button>
       </div>
@@ -44,7 +57,14 @@ export default function FormTable<T extends { id: number }>({
       <div className="card-body p-0">
         <div className="table-responsive">
           <table className="table table-hover align-middle mb-0">
-            <thead className="table-warning text-secondary text-uppercase small">
+            <thead
+              style={{
+                backgroundColor: "#0288D1",
+                color: "#fff",
+                textTransform: "uppercase",
+                fontSize: "0.8rem",
+              }}
+            >
               <tr>
                 {columns.map((col) => (
                   <th key={String(col.key)}>{col.label}</th>
@@ -89,7 +109,8 @@ export default function FormTable<T extends { id: number }>({
                     <td className="text-center">
                       <button
                         onClick={() => onEdit(item)}
-                        className="btn btn-outline-warning btn-sm me-2"
+                        className="btn btn-outline-light btn-sm me-2"
+                        style={{ borderColor: "#151212ff", color: "#1a43d7ff" }}
                       >
                         Sửa
                       </button>

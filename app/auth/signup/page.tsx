@@ -1,129 +1,125 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "../../lib/supabaseClient";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { UserAuth } from "@/types/user";
+import Link from "next/link";
 
 export default function SignupPage() {
-  const [companyName, setCompanyName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [industry, setIndustry] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState<UserAuth>({
+    id: 0,
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    address: "",
+    created_at: "",
+  });
   const [loading, setLoading] = useState(false);
-
+  const [message, setMessage] = useState("");
   const router = useRouter();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleSignup = async () => {
-    if (!companyName || !phone || !address || !industry || !email || !password) {
-      alert("Vui lòng điền đầy đủ thông tin");
-      return;
-    }
-
     setLoading(true);
-
+    setMessage("");
     try {
-      // 1️⃣ Tạo user trên Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
       });
+      const result = await res.json();
 
-      if (authError) {
-        alert(authError.message);
-        return;
+      if (!res.ok) {
+        setMessage(result.error || "Đăng ký thất bại");
+      } else {
+        setMessage(`Đăng ký thành công: ${result.user.name}`);
+        setTimeout(() => router.push("/auth/login"), 1500);
       }
-
-      // 2️⃣ Lưu thông tin công ty vào table "companies"
-      const { error: dbError } = await supabase
-        .from("companies")
-        .insert([
-          {
-            user_id: authData.user?.id,
-            company_name: companyName,
-            phone,
-            address,
-            industry,
-            email,
-          },
-        ]);
-
-      if (dbError) {
-        alert(dbError.message);
-        return;
-      }
-
-      alert("Đăng ký công ty thành công! Kiểm tra email để xác thực.");
-      router.push("/login");
+    } catch (err) {
+      console.error(err);
+      setMessage("Có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="row justify-content-center">
-      <div className="col-md-6">
-        <h2 className="mb-4 text-center">Đăng ký công ty</h2>
+    <div
+      className="d-flex justify-content-center align-items-center"
+     
+    >
+      <div className="col-md-4">
+        <div className="card shadow-lg rounded-4 border-0 overflow-hidden">
+          <div className="card-body p-5">
+            <h2
+              className="mb-4 text-center fw-bold"
+              style={{ color: "#0288d1", fontFamily: "Arial, sans-serif" }}
+            >
+              Đăng ký
+            </h2>
 
-        <input
-          type="text"
-          placeholder="Tên công ty"
-          className="form-control mb-2"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Số điện thoại"
-          className="form-control mb-2"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Địa chỉ"
-          className="form-control mb-2"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Ngành nghề"
-          className="form-control mb-2"
-          value={industry}
-          onChange={(e) => setIndustry(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="form-control mb-2"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Mật khẩu"
-          className="form-control mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+            {message && (
+              <div
+                className="alert text-center"
+                style={{ backgroundColor: "#b3e5fc", color: "#01579b" }}
+              >
+                {message}
+              </div>
+            )}
 
-        <button
-          className="btn btn-success w-100"
-          onClick={handleSignup}
-          disabled={loading}
-        >
-          {loading ? "Đang xử lý..." : "Đăng ký"}
-        </button>
+            {["name", "email", "password", "phone", "address"].map((field) => (
+              <input
+                key={field}
+                type={field === "password" ? "password" : "text"}
+                name={field}
+                placeholder={
+                  field === "name"
+                    ? "Họ và tên"
+                    : field === "email"
+                    ? "Email"
+                    : field === "password"
+                    ? "Mật khẩu"
+                    : field === "phone"
+                    ? "Số điện thoại"
+                    : "Địa chỉ"
+                }
+                className="form-control form-control-lg rounded-pill shadow-sm mb-3"
+                value={form[field as keyof UserAuth] || ""}
+                onChange={handleChange}
+                style={{ color: "#01579b" }}
+              />
+            ))}
 
-        <p className="mt-3 text-center">
-          Đã có tài khoản?{" "}
-          <Link href="/login" className="text-primary">
-            Login
-          </Link>
-        </p>
+            <button
+              className="btn btn-lg w-100 rounded-pill fw-bold"
+              onClick={handleSignup}
+              disabled={loading}
+              style={{
+                background: "linear-gradient(90deg, #0288d1, #26c6da)",
+                border: "none",
+                color: "#fff",
+              }}
+            >
+              {loading ? "Đang xử lý..." : "Đăng ký"}
+            </button>
+
+            <p className="text-center mt-4 mb-0" style={{ color: "#0277bd" }}>
+              Bạn đã có tài khoản?{" "}
+              <Link
+                href="/auth/login"
+                className="text-decoration-none fw-bold"
+                style={{ color: "#0288d1" }}
+              >
+                Đăng nhập
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

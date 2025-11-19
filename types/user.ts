@@ -6,3 +6,6 @@ export interface User {
   address?: string
   created_at?: string
 }
+export interface UserAuth extends User {
+  password: string
+}

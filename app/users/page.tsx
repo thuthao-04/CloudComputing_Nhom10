@@ -4,6 +4,8 @@ import { supabase } from "@/app/lib/supabaseClient"
 import { User } from "@/types/user"
 import FormTable from "@/app/components/FormTable"
 import FormModal from "@/app/components/FormModal"
+import { useRequireAuth } from "../hooks/useRequireAuth"
+import { useAuth } from "../hooks/useAuth"
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
@@ -38,7 +40,6 @@ export default function UsersPage() {
     { key: "created_at", label: "Ngày tạo", isDate: true },
   ]
 
-  // Sửa fields: bỏ 'as const' và ép kiểu mutable
   const fields: { key: keyof User; label: string }[] = [
     { key: "name", label: "Tên người dùng" },
     { key: "email", label: "Email" },

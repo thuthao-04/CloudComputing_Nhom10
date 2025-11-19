@@ -52,7 +52,7 @@ export default function ProductsPage() {
     { key: "price", label: "Giá" },
     { key: "image_url", label: "Ảnh (URL)" },
   ]
-
+ 
   return (
     <>
       <FormTable
