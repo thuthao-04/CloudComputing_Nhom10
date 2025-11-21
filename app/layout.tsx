@@ -3,8 +3,10 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";
 import Link from "next/link";
+import { useAuth } from "./hooks/useAuth";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, loading } = useAuth();
   return (
     <html lang="vi">
       <body
@@ -24,18 +26,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               >
                 Trang chủ
               </Link>
-              <Link
-                href="/users"
-                className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"
-              >
-                Người dùng
-              </Link>
-              <Link
-                href="/products"
-                className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"
-              >
-                Sản phẩm
-              </Link>
+              {/* Chỉ hiển thị "Người dùng" và "Sản phẩm" khi đã đăng nhập */}
+              {!loading && isAuthenticated && (
+                <>
+                  <Link
+                    href="/users"
+                    className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"
+                  >
+                    Người dùng
+                  </Link>
+                  <Link
+                    href="/products"
+                    className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"
+                  >
+                    Sản phẩm
+                  </Link>
+                </>
+              )}
               <Link
                 href="/auth/login"
                 className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"

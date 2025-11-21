@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -9,7 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -33,7 +33,7 @@ export default function LoginPage() {
         setMessage(result.error || "Đăng nhập thất bại");
       } else {
         setMessage(`Xin chào ${result.user.name}!`);
-        setTimeout(() => router.push("/"), 1000);
+        window.location.href = "/";
       }
     } catch (err) {
       console.error(err);

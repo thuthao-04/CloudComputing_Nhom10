@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const { data, error } = await supabase
-      .from<User>("users")
+      .from("users")
       .insert([{ name, email, password: hashedPassword, phone, address }])
-      .select<User>();
+      .select();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
-    return NextResponse.json({ user: data[0] });
+    return NextResponse.json({ user: data[0] as User });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Có lỗi server" }, { status: 500 });

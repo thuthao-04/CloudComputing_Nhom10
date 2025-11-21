@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
     // Lấy user theo email
     const { data, error } = await supabase
-      .from<User>("users")
+      .from("users")
       .select("*")
       .eq("email", email)
       .single();
