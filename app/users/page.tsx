@@ -4,9 +4,7 @@ import { supabase } from "@/app/lib/supabaseClient"
 import { User } from "@/types/user"
 import FormTable from "@/app/components/FormTable"
 import FormModal from "@/app/components/FormModal"
-import { useRequireAuth } from "../hooks/useRequireAuth"
-import { useAuth } from "../hooks/useAuth"
-
+import SearchBar from "@/app/components/SearchBar" 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [showModal, setShowModal] = useState(false)
@@ -30,7 +28,7 @@ export default function UsersPage() {
     fetchUsers()
   }
 
-  // Sửa columns: bỏ 'as const' và ép kiểu mutable
+  // Columns cho bảng
   const columns: { key: keyof User; label: string; isDate?: boolean }[] = [
     { key: "id", label: "ID" },
     { key: "name", label: "Tên" },
@@ -49,6 +47,14 @@ export default function UsersPage() {
 
   return (
     <>
+      {/* SearchBar */}
+      <SearchBar
+        table="users"
+        columns={["name", "email", "phone", "address"]}
+        onResults={(data) => setUsers(data)}
+        placeholder="Tìm kiếm người dùng..."
+      />
+
       <FormTable
         title="Danh sách người dùng"
         data={users}

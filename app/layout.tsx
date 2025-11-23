@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useAuth } from "./hooks/useAuth";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, logout } = useAuth();
+
   return (
     <html lang="vi">
       <body
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           <div className="container d-flex justify-content-between align-items-center">
             <h1 className="fs-6 mb-0 fw-bold text-white">🌸 Cloud Computing-N10</h1>
+
             <nav className="d-flex gap-2 align-items-center">
               <Link
                 href="/"
@@ -26,7 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               >
                 Trang chủ
               </Link>
-              {/* Chỉ hiển thị "Người dùng" và "Sản phẩm" khi đã đăng nhập */}
+
+              {/* Chỉ hiển thị khi đã đăng nhập */}
               {!loading && isAuthenticated && (
                 <>
                   <Link
@@ -43,17 +46,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   </Link>
                 </>
               )}
-              <Link
-                href="/auth/login"
-                className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"
-              >
-                Login
-              </Link>
+
+              {/* Chỉ hiển thị khi chưa đăng nhập */}
+              {!loading && !isAuthenticated && (
+                <Link
+                  href="/auth/login"
+                  className="text-white text-decoration-none fw-semibold px-3 py-1 rounded-3 nav-link-hover"
+                >
+                  Login
+                </Link>
+              )}
+
+              {/* Đăng xuất khi đã đăng nhập */}
+              {!loading && isAuthenticated && (
+                <button
+                  onClick={logout}
+                  className="btn btn-danger fw-semibold px-3 py-1 rounded-3"
+                >
+                  Đăng xuất
+                </button>
+              )}
             </nav>
           </div>
         </header>
 
         <main className="container my-5 flex-grow-1">{children}</main>
+
         <footer className="text-center py-4 text-muted border-top mt-auto">
           © {new Date().getFullYear()} Quản lý dữ liệu với Supabase & Next.js 🌷
         </footer>

@@ -5,6 +5,7 @@ import { supabase } from "@/app/lib/supabaseClient"
 import { Product } from "@/types/product"
 import FormTable from "@/app/components/FormTable"
 import FormModal from "@/app/components/FormModal"
+import SearchBar from "@/app/components/SearchBar" 
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -55,6 +56,13 @@ export default function ProductsPage() {
  
   return (
     <>
+     {/* SearchBar */}
+          <SearchBar
+            table="products"
+            columns={["name", "category", "description"]}
+            onResults={(data) => setProducts(data)}
+            placeholder="Tìm kiếm sản phẩm..."
+          />
       <FormTable
         title="Danh sách sản phẩm"
         data={products}

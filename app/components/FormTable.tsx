@@ -1,19 +1,22 @@
-"use client"
+"use client";
+
+import { useMemo } from "react";
+import SearchBar from "./SearchBar";
 
 interface Column<T> {
-  key: keyof T
-  label: string
-  isDate?: boolean
-  isImage?: boolean
+  key: keyof T;
+  label: string;
+  isDate?: boolean;
+  isImage?: boolean;
 }
 
 interface Props<T> {
-  title: string
-  data: T[]
-  columns: Column<T>[]
-  onAdd: () => void
-  onEdit: (item: T) => void
-  onDelete: (id: number) => void
+  title: string;
+  data: T[];
+  columns: Column<T>[];
+  onAdd: () => void;
+  onEdit: (item: T) => void;
+  onDelete: (id: number) => void;
 }
 
 export default function FormTable<T extends { id: number }>({
@@ -24,17 +27,35 @@ export default function FormTable<T extends { id: number }>({
   onEdit,
   onDelete,
 }: Props<T>) {
+  
   const formatDate = (value: any) => {
-    if (!value) return ""
-    const date = new Date(value)
-    return date.toLocaleDateString("vi-VN")
-  }
+    if (!value) return "";
+    const date = new Date(value);
+    return date.toLocaleDateString("vi-VN");
+  };
+
+  // 🔥 Xác định cột ngày để sort
+  const dateColumn = columns.find((c) => c.isDate);
+
+  // 🔥 Sort dữ liệu theo ngày mới nhất
+  const sortedData = useMemo(() => {
+    if (!dateColumn) return data;
+
+    return [...data].sort((a, b) => {
+      const dateA = new Date(a[dateColumn.key] as any).getTime();
+      const dateB = new Date(b[dateColumn.key] as any).getTime();
+      return dateB - dateA; // mới nhất lên trước
+    });
+  }, [data, dateColumn]);
+
+  // 🔥 Bỏ cột id khỏi bảng
+  const filteredColumns = columns.filter((col) => col.key !== "id");
 
   return (
     <div className="card shadow-sm border-0" style={{ backgroundColor: "#E0F7FA" }}>
       <div
-        className="card-header d-flex justify-content-between align-items-center"
-        style={{ backgroundColor: "#0288D1", color: "#fff" , height: '60px'}}
+        className="card-header d-flex justify-content-between align-items-center flex-wrap"
+        style={{ backgroundColor: "#0288D1", color: "#fff", height: "auto", gap: "10px" }}
       >
         <h5 className="mb-0 fw-semibold">
           {title}{" "}
@@ -45,6 +66,7 @@ export default function FormTable<T extends { id: number }>({
             ({data.length})
           </span>
         </h5>
+
         <button
           onClick={onAdd}
           className="btn btn-light btn-sm px-3 fw-semibold"
@@ -66,23 +88,29 @@ export default function FormTable<T extends { id: number }>({
               }}
             >
               <tr>
-                {columns.map((col) => (
+                <th style={{ width: "60px" }} className="text-center">STT</th>
+
+                {filteredColumns.map((col) => (
                   <th key={String(col.key)}>{col.label}</th>
                 ))}
+
                 <th className="text-center">Hành động</th>
               </tr>
             </thead>
+
             <tbody>
-              {data.length === 0 ? (
+              {sortedData.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length + 1} className="text-center py-4 text-muted">
+                  <td colSpan={filteredColumns.length + 2} className="text-center py-4 text-muted">
                     Không có dữ liệu
                   </td>
                 </tr>
               ) : (
-                data.map((item) => (
+                sortedData.map((item, index) => (
                   <tr key={item.id}>
-                    {columns.map((col) => (
+                    <td className="text-center fw-semibold">{index + 1}</td>
+
+                    {filteredColumns.map((col) => (
                       <td key={String(col.key)}>
                         {col.isDate
                           ? formatDate(item[col.key])
@@ -102,10 +130,10 @@ export default function FormTable<T extends { id: number }>({
                             ) : (
                               "Chưa có ảnh"
                             )
-                          : String(item[col.key] ?? "")
-                        }
+                          : String(item[col.key] ?? "")}
                       </td>
                     ))}
+
                     <td className="text-center">
                       <button
                         onClick={() => onEdit(item)}
@@ -114,6 +142,7 @@ export default function FormTable<T extends { id: number }>({
                       >
                         Sửa
                       </button>
+
                       <button
                         onClick={() => onDelete(item.id)}
                         className="btn btn-outline-danger btn-sm"
@@ -129,5 +158,5 @@ export default function FormTable<T extends { id: number }>({
         </div>
       </div>
     </div>
-  )
+  );
 }

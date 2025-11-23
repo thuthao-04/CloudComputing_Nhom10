@@ -4,3 +4,33 @@
   background-color: rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+
+  /* Thêm hai dòng này */
+  margin-bottom: 20px;     
+  margin-left: auto;       
+
+  width: 100%;
+  max-width: 450px;       
+  position: relative;
+}
+
+.search-icon {
+  font-size: 20px;
+  color: #6c6c6c;
+  margin-right: 10px;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+}
